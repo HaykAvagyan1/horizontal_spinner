@@ -1,1 +1,1 @@
-# tool_wordspinner
+# horizontal_spinner
