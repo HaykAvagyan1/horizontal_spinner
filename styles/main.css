@@ -116,52 +116,66 @@ body {
     overflow: hidden;
 }
 
-.left, .right, .leftOverlay, .rightOverlay {
+.scrollbar, .scrollbarOverlay {
     transition: 1s;
-    height: 195px;
-    width: 310px;
-    border-radius: 19px;
-    top: 190px;
     position: absolute;
     overflow: hidden;
-    scroll-behavior: smooth;
-}
-
-.left, .leftOverlay {
-    left: 97px;
     font-family: FedraBold;
-    font-size: 40px;
-
+    
     color: #5C7CA6;
+    font-size: 40px;
+    border-radius: 19px;
+    bottom: 50px;
+    left: 50px;
+
+    width: 800px;
+    height: 70px;
 }
 
-.right, .rightOverlay {
-    left: 493px;
-    font-family: FedraDemi;
-    font-size: 25px;
-
-    color: #9AB7DB;
-}
-
-.leftOverlay, .rightOverlay {
+.scrollbarOverlay {
     box-shadow: inset -2px -2px 5px 0 #FFFFFF, inset 2px 3px 3px 1px rgba(222,222,230,0.72);
     pointer-events: none;
 }
 
-.left div, .right div {
-    margin-left: 56px;
-    transition: 1s;
-    height: 88px;
-    width: 199px;
-    border-radius: 19px;
+.innerCircle {
+    transition: 0.2s;
+    height: 40px;
+    width: 40px;
+    border-radius: 100%;
     background-color: #F3F3F3;
     box-shadow: 5px 5px 5px 0 rgba(222,222,230,0.5), -3px -3px 5px 0 #FEFEFE;
 
-    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.block {
+    transition: 0.2s;
+    position: absolute;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    margin-top: 10px;
+}
+
+.scrollbar div img {
+    transition: 0.2s;
+    width: 70%;
+    height: 70%;
+}
+
+.current img {
+    width: 80% !important;
+    height: 80% !important;
+}
+
+.current div {
+    width: 50px !important;
+    height: 50px !important;
 }
 
 .row {

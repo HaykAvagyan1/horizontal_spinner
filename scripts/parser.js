@@ -2,36 +2,21 @@
 
 const parser = {
     dataFetch: async () => {
-        return words;
+        return icons;
         // return axios.get(config.query_url + _uid);
     }
 }
 
-const words = {
+const icons = {
     objects: [
         {
-            text: "Plastic",
-            value: "Once or twice"
+            url : "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Information_icon.svg/768px-Information_icon.svg.png"
         },
         {
-            text: "Test",
-            value: "Twice"
+            url : "https://upload.wikimedia.org/wikipedia/commons/6/6c/Phone_icon.png"
         },
         {
-            text: "Water",
-            value: "Three times"
-        },
-        {
-            text: "ab",
-            value: "Once"
-        },
-        {
-            text: "ca",
-            value: "Infinite"
-        },
-        {
-            text: "ds",
-            value: "Three times"
+            url : "https://i.pinimg.com/originals/0c/3b/3a/0c3b3adb1a7530892e55ef36d3be6cb8.png"
         }
     ]
 }

@@ -1,70 +1,71 @@
 const view = {
     correct: 0,
     row: `<div class="row"></div>`,
+    offset: 67,
+    currentPosition: 375,
+    rightOffset: 10,
 
-    addPair: (current, top, bottom, parent, type) => {
-        let currentText = type == 0 ? current.text : current.value;
-        let topText = type == 0 ? top.text : top.value;
-        let bottomText = type == 0 ? bottom.text : bottom.value;
-
-        $(parent).append(`<div class="top">${topText}</div>`);
-        $(parent).append(`<div class="current">${currentText}</div>`);
-        $(parent).append(`<div class="bottom">${bottomText}</div>`);
+    addCurrent: (img) => {
+        $(".scrollbar").append(`<div onclick="scrollHere(7)" class="block current" id="7"><div class="innerCircle"><img src="${img}"></div></div>`);
+        $("#7").css("left", `${view.currentPosition}px`);
     },
-    updatePair: async (current, top, bottom, dir, parent, type, reset, generate) => {
-        let currentText = type == 0 ? current.text : current.value;
-        let topText = type == 0 ? top.text : top.value;
-        let bottomText = type == 0 ? bottom.text : bottom.value;
+    addOthers: (dir, i, img) => {
+        let id = 7 + (dir * i);
 
-        scrolling[type] = true;
-
-        if (reset === undefined || reset === false) {
-            $(parent).find(dir > 0 ? ".bottom" : ".top").addClass(dir > 0 ? "offscreenBottom" : "offscreenTop");
+        if (dir > 0) {
+            view.addIcon(id, img, dir);
+            let newPosition = (view.currentPosition) + (i * view.offset);
+            view.setPosition(id, newPosition);
+        } else {
+            view.addIcon(id, img, dir);
+            let newPosition = view.currentPosition - (i * view.offset);
+            view.setPosition(id, newPosition);
         }
+    },
+    scroll: async (amount) => {
+        if (amount == 0) return;
+        scrolling = true;
 
-        $(parent).find(".current").addClass(dir > 0 ? "bottom" : "top");
-        $(parent).find(".current").removeClass("current");
+        // for (let i = 0; i < Math.abs(amount); i++) { !!FINISH!!
+        //     if (amount > 0) {
+        //         let index = 0 - amount;
+        //         view.addIcon(index, getIcon(currentIcon - 8), -amount);
+        //         view.setPosition(index, (view.currentPosition) + ((currentIcon - 8) * view.offset));
+        //     } else {
+        //         let index = ($(".scrollbar .block").length - 1) - amount;
+        //         view.addIcon(index, getIcon(currentIcon + 8), -amount);
+        //         view.setPosition(index, (view.currentPosition) - ((currentIcon + 8) * view.offset));
+        //     }
+        // }
 
-        $(parent).find(dir > 0 ? ".top" : ".bottom").addClass("current");
-        $(parent).find(dir > 0 ? ".top" : ".bottom").removeClass(dir > 0 ? "top" : "bottom");
-        if (data.length >= 3) {
-            $(parent).find(".current").text(currentText);
-        }
+        let current = $(".current").index();
 
-        if (generate) {
-            if (dir > 0) {
-                $(parent).find(".current").before(`<div class="offscreenTop">${topText}</div>`);
-            } else {
-                $(parent).find(".current").after(`<div class="offscreenBottom">${bottomText}</div>`);
-            }
-        }
+        $(".current").removeClass("current");
+        $(`#${current - amount}`).addClass("current");
+
+        $(".scrollbar div").each(function(i) {
+            $(this).css("left", amount > 0 ? `+=${amount * view.offset}` : `-=${Math.abs(amount) * view.offset}`);
+        });
+
+        current = $(".current").index();
 
         await timeout(200);
-        $(parent).find(dir > 0 ? ".offscreenTop" : ".offscreenBottom").addClass(dir > 0 ? "top" : "bottom");
-        $(parent).find(dir > 0 ? ".offscreenTop" : ".offscreenBottom").removeClass(dir > 0 ? "offscreenTop" : "offscreenBottom");
-
-        await timeout (600);
-        $(parent).find(dir > 0 ? ".bottom" : ".top").text(dir > 0 ? bottomText : topText);
-        $(parent).find(dir > 0 ? ".offscreenBottom" : ".offscreenTop").remove();
-        if (reset == true) $(".goLeft").remove();
-
-        scrolling[type] = false;
+        scrolling = false;
     },
-    secondLastScroll: async () => {
-        $(".top").addClass   ("current");
-        $(".top").removeClass("top");
-        $(".goLeft" ).remove ();
-        $(".goRight").remove ();
-
-        $(".left").find (".current").text(getWord(currentWord[0].text));
-        $(".right").find(".current").text(getWord(currentWord[1].value));
+    addIcon: (id, img, dir) => {
+        if (dir > 0) {
+            $(".scrollbar").append (`<div onclick="scrollHere(${id})" class="block" id="${id}"><div class="innerCircle"><img src="${img}"></div></div>`);
+        } else {
+            $(".scrollbar").prepend(`<div onclick="scrollHere(${id})" class="block" id="${id}" ><div class="innerCircle"><img src="${img}"></div></div>`);
+        }
     },
-    lastScroll: async () => {
-        $(".left div").addClass("current");
-        $(".left div").removeClass("top bottom")
-
-        $(".right div").addClass("current");
-        $(".right div").removeClass("top bottom");
+    setPosition: (id, newPosition) => {
+        $(`#${id}`).css("left", `${newPosition}px`);
+    },
+    resetIds: () => {
+        $(".scrollbar div").each(function(id) {
+            $(this).attr("id", `${id}`);
+        });
     },
     onPlay: async () => {
         $("#status span").last().text(data.length);
@@ -72,6 +73,7 @@ const view = {
         $(".question").css("opacity", 0);
 
         $("#play svg").css("opacity", 0);
+        $("#play").addClass("goUnder");
         await timeout (500);
         $("#play svg").remove();
         $(".icon").load(window.location.href + "graphics/checkmark.svg");
@@ -80,7 +82,7 @@ const view = {
         await timeout (1000);
         $(".question").hide("opacity", 0);
 
-        let classes = [".left", ".right", ".leftOverlay", ".rightOverlay"];
+        let classes = [".scrollbar", ".scrollbarOverlay"];
         for (let i = 0; i < classes.length; i++) {
             $(classes[i]).removeClass("closed");
         }
@@ -90,14 +92,6 @@ const view = {
 		await timeout(500);
 		$(`#${color}`).css("opacity", 0);
 	},
-    // changeColor: async (color) => {
-    //     $("path").addClass(color);
-    //     $("#play").removeClass("hoverable");
-
-    //     await timeout(600);
-    //     $("#play").addClass("hoverable");
-    //     $("path").removeClass(color);
-    // },
     updateStatus: () =>{
         $("#status span").first().text(++view.correct);
     },
