@@ -43,7 +43,6 @@ const wheel = async (e) => {
 }
 
 const scrollHere = async(i) => {
-    console.log(i, $(".current").index());
     let amount = -(i - $(".current").index());
     currentIcon += amount;
 

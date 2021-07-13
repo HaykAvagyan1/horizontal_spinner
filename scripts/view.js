@@ -14,7 +14,7 @@ const view = {
 
         if (dir > 0) {
             view.addIcon(id, img, dir);
-            let newPosition = (view.currentPosition) + (i * view.offset);
+            let newPosition = view.currentPosition + (i * view.offset);
             view.setPosition(id, newPosition);
         } else {
             view.addIcon(id, img, dir);
@@ -26,18 +26,6 @@ const view = {
         if (amount == 0) return;
         scrolling = true;
 
-        // for (let i = 0; i < Math.abs(amount); i++) { !!FINISH!!
-        //     if (amount > 0) {
-        //         let index = 0 - amount;
-        //         view.addIcon(index, getIcon(currentIcon - 8), -amount);
-        //         view.setPosition(index, (view.currentPosition) + ((currentIcon - 8) * view.offset));
-        //     } else {
-        //         let index = ($(".scrollbar .block").length - 1) - amount;
-        //         view.addIcon(index, getIcon(currentIcon + 8), -amount);
-        //         view.setPosition(index, (view.currentPosition) - ((currentIcon + 8) * view.offset));
-        //     }
-        // }
-
         let current = $(".current").index();
 
         $(".current").removeClass("current");
@@ -48,6 +36,27 @@ const view = {
         });
 
         current = $(".current").index();
+
+        let length = $(".block").length;
+
+        for (let i = 1; i <= Math.abs(amount); i++) {
+            let remove = amount > 0 ? length - i : Math.abs(amount) - i;
+            $(`#${remove}`).remove();
+
+            let iZero = i - 1;
+
+            if (remove < current) {
+                view.addIcon(current + 7, getIcon((currentIcon - iZero) + 7), -amount);
+                let newPosition = view.currentPosition + ((7 + iZero) * view.offset);
+                view.setPosition(current + 7, newPosition);
+            } else {
+                view.addIcon(current - 7, getIcon((currentIcon - iZero) - 7), -amount);
+                let newPosition = view.currentPosition - ((7 - iZero) * view.offset);
+                view.setPosition(current - 7, newPosition);
+            }
+        }
+
+        view.resetIds();
 
         await timeout(200);
         scrolling = false;
@@ -63,9 +72,12 @@ const view = {
         $(`#${id}`).css("left", `${newPosition}px`);
     },
     resetIds: () => {
-        $(".scrollbar div").each(function(id) {
-            $(this).attr("id", `${id}`);
-        });
+        $(function() {
+            $(".block").each(function(index) {
+                $(this).prop("id", index.toString());
+                $(this).attr("onclick", `scrollHere(${index})`);
+            });
+        })
     },
     onPlay: async () => {
         $("#status span").last().text(data.length);
