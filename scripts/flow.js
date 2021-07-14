@@ -4,8 +4,14 @@ const timeout = (ms) => {
 
 let data;
 let currentIcon = 0;
-let scrolling = false;
-let done = false;
+let scrolling   = false;
+let dontScroll  = false;
+let positions   = [];
+
+let activeButton = -1;
+let activeIcon   = -1;
+
+let flashDone = false;
 
 jQuery.event.special.wheel = {
     setup: function( _, ns, handle ) {
@@ -24,13 +30,45 @@ const onPageLoad = async () => {
 
     currentIcon = Math.floor(Math.random() * data.length - 1);
 
-    view.addCurrent(getIcon(currentIcon));
-    for (let i = 1; i < 8; i++) {
-        view.addOthers(1, i, getIcon(currentIcon + i));
-        view.addOthers(-1, i, getIcon(currentIcon - i));
+    view.addCurrent(getIcon(currentIcon).url);
+    for (let i = 1; i <= 1; i++) {
+        view.addOthers( 1, i, getIcon(currentIcon + i).url);
+        view.addOthers(-1, i, getIcon(currentIcon - i).url);
     }
-    
+
+    $(".block").each(function (i) {
+        positions[i] = $(this).position().left;
+    });
+
+    if (data.length < 5) {
+        dontScroll = true;
+        return;
+    }
     $(".scrollbar").on('wheel', async function (e) { await wheel(e) });
+}
+
+const changeInfo = (i) => {
+    if (flashDone) {
+        $("#warning").css("opacity", 0);
+    }
+
+    activeButton = view.toggleButton(i);
+
+    if (activeIcon == -1 || activeIcon == undefined) return;
+
+    if (activeButton == -1) {
+        view.updateDescription(getIcon(activeIcon).description);
+    } else {
+        view.updateDescription(getIcon(activeIcon).info[i]);
+    }
+}
+
+const flashWarning = async (length) => {
+    for (let i = 0; i < length; i++) {
+        await view.flashWarning();
+    }
+
+    $("#warning").css("opacity", 1);
 }
 
 const wheel = async (e) => {
@@ -43,10 +81,25 @@ const wheel = async (e) => {
 }
 
 const scrollHere = async(i) => {
-    let amount = -(i - $(".current").index());
-    currentIcon += amount;
+    if (!dontScroll) {
+        let amount = -(i - $(".current").index());
+        currentIcon += amount;
 
-    await view.scroll(amount);
+        await view.scroll(amount);
+    } else {
+        
+    }
+
+    if (!flashDone) {
+        flashWarning(1);
+        flashDone = true;
+    }
+
+    activeIcon = view.toggleIcon(i);
+    if (activeIcon == -1 || activeIcon == undefined) return;
+
+    view.updateTitle      (getIcon(activeIcon).title);
+    view.updateDescription(getIcon(activeIcon).description);
 }
 
 const getIcon = (newIndex) => {
@@ -59,7 +112,7 @@ const getIcon = (newIndex) => {
         newIndex = 0;
     }
 
-    return data[newIndex].url;
+    return data[newIndex];
 }
 
 $(onPageLoad);
