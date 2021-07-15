@@ -95,11 +95,13 @@ const scrollHere = async(i) => {
         flashDone = true;
     }
 
+    if (i == activeIcon) return;
     activeIcon = view.toggleIcon(i);
     if (activeIcon == -1 || activeIcon == undefined) return;
 
     view.updateTitle      (getIcon(activeIcon).title);
     view.updateDescription(getIcon(activeIcon).description);
+    console.log(activeIcon);
 }
 
 const getIcon = (newIndex) => {
