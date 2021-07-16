@@ -16,6 +16,10 @@ const view = {
         $("#description").text(text);
     },
     activateIcon: (i) => {
+        $(".block").each(function() {
+            $(this).removeClass("inset_shadow");
+        });
+
         $(`#${i}`).addClass("inset_shadow");
 
         return i;
