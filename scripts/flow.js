@@ -19,11 +19,6 @@ jQuery.event.special.wheel = {
     }
 };
 
-const onPlay = async () => {
-    await view.onPlay();
-    $("#play").attr("onclick", "check()");
-}
-
 const onPageLoad = async () => {
     data = await parser.dataFetch();
     data = data.objects;
@@ -31,7 +26,13 @@ const onPageLoad = async () => {
     currentIcon = Math.floor(Math.random() * data.length - 1);
 
     view.addCurrent(getIcon(currentIcon).url);
-    for (let i = 1; i <= 1; i++) {
+
+    let sidesCount = Math.floor((data.length - 1) / 2);
+    if (sidesCount > 4) {
+        sidesCount = 4;
+    }
+    
+    for (let i = 1; i <= sidesCount; i++) {
         view.addOthers( 1, i, getIcon(currentIcon + i).url);
         view.addOthers(-1, i, getIcon(currentIcon - i).url);
     }
@@ -40,14 +41,15 @@ const onPageLoad = async () => {
         positions[i] = $(this).position().left;
     });
 
-    if (data.length < 5) {
+    if (sidesCount < 4) {
         dontScroll = true;
         return;
     }
+
     $(".scrollbar").on('wheel', async function (e) { await wheel(e) });
 }
 
-const changeInfo = (i) => {
+const changeInfo = (i, infoType) => {
     if (flashDone) {
         $("#warning").css("opacity", 0);
     }
@@ -59,7 +61,7 @@ const changeInfo = (i) => {
     if (activeButton == -1) {
         view.updateDescription(getIcon(activeIcon).description);
     } else {
-        view.updateDescription(getIcon(activeIcon).info[i]);
+        view.updateDescription(getIcon(activeIcon).info[infoType]);
     }
 }
 
@@ -81,13 +83,17 @@ const wheel = async (e) => {
 }
 
 const scrollHere = async(i) => {
+    $(".block").each(function() {
+        $(this).removeClass("inset_shadow");
+    })
+    
+    activeIcon = view.activateIcon(i);
+
     if (!dontScroll) {
         let amount = -(i - $(".current").index());
         currentIcon += amount;
 
         await view.scroll(amount);
-    } else {
-        
     }
 
     if (!flashDone) {
@@ -95,13 +101,8 @@ const scrollHere = async(i) => {
         flashDone = true;
     }
 
-    if (i == activeIcon) return;
-    activeIcon = view.toggleIcon(i);
-    if (activeIcon == -1 || activeIcon == undefined) return;
-
     view.updateTitle      (getIcon(activeIcon).title);
     view.updateDescription(getIcon(activeIcon).description);
-    console.log(activeIcon);
 }
 
 const getIcon = (newIndex) => {

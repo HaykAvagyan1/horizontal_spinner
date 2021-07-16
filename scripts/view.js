@@ -15,20 +15,10 @@ const view = {
     updateDescription: (text) => {
         $("#description").text(text);
     },
-    toggleIcon: (i) => {
-        if (activeIcon < 0) {
-            $(`#${i}`).removeClass("outside_shadow");
-            $(`#${i}`).addClass("inset_shadow");
+    activateIcon: (i) => {
+        $(`#${i}`).addClass("inset_shadow");
 
-            return i;
-        } else if (i != activeIcon) {
-            $(`#${activeIcon}`).removeClass("inset_shadow");
-            $(`#${activeIcon}`).addClass("outside_shadow");
-
-            $(`#${i}`).removeClass("outside_shadow");
-            $(`#${i}`).addClass("inset_shadow");
-            return i;
-        }
+        return i;
     },
     toggleButton: (i) => {
         if (activeIcon == -1) return -1;
@@ -79,7 +69,7 @@ const view = {
         scrolling = true;
 
         let current    = $(".current").index();
-        let difference =  7 - current - amount;
+        let difference = 7 - current - amount;
 
         $(".current").removeClass("current");
         $(`#${current - amount}`).addClass("current");
@@ -109,16 +99,15 @@ const view = {
             if (Math.abs(amount) == 1) {
                 view.setPosition(id, positions[pos]);
             } else {
-                let newPos = remove < current ? positions[pos] + view.offset : positions[pos] - view.offset;
+                let newPos = remove < current ? positions[pos] + (view.offset * i + 15) : positions[pos] - (view.offset * i);
                 view.setPosition(id, newPos);
-                await timeout(15);
+                await timeout(50);
                 view.setPosition(id, positions[pos]);
             }
         }
 
-        view.resetIds();
-
         await timeout(200);
+        view.resetIds();
         scrolling = false;
     },
     addIcon: (id, img, dir) => {
@@ -138,25 +127,5 @@ const view = {
                 $(this).attr("onclick", `scrollHere(${index})`);
             });
         })
-    },
-    onPlay: async () => {
-        $("#status span").last().text(data.length);
-        $("#status").addClass("show");
-        $(".question").css("opacity", 0);
-
-        $("#play svg").css("opacity", 0);
-        $("#play").addClass("goUnder");
-        await timeout (500);
-        $("#play svg").remove();
-        $(".icon").load(window.location.href + "graphics/checkmark.svg");
-        $(".icon").addClass("checkmark");
-
-        await timeout (1000);
-        $(".question").hide("opacity", 0);
-
-        let classes = [".scrollbar", ".scrollbarOverlay"];
-        for (let i = 0; i < classes.length; i++) {
-            $(classes[i]).removeClass("closed");
-        }
     }
 }
