@@ -83,10 +83,6 @@ const wheel = async (e) => {
 }
 
 const scrollHere = async(i) => {
-    $(".block").each(function() {
-        $(this).removeClass("inset_shadow");
-    })
-    
     activeIcon = view.activateIcon(i);
 
     if (!dontScroll) {
