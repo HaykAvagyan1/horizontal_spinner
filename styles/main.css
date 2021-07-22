@@ -166,13 +166,13 @@ body {
 }
 
 .block:hover svg {
-    opacity: 0.8;
+    opacity: 0.6;
 }
 
 .scrollbar div svg {
     transition: 0.2s;
-    width:  76px;
-    height: 76px;
+    width:  76px !important;
+    height: 76px !important;
 }
 
 .scrollbar div path {

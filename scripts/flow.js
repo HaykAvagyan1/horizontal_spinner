@@ -83,6 +83,7 @@ const wheel = async (e) => {
 }
 
 const scrollHere = async(i) => {
+    activeButton = view.toggleButton(activeButton);
     activeIcon = view.activateIcon(i);
 
     if (!dontScroll) {
