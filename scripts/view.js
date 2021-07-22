@@ -52,8 +52,7 @@ const view = {
         }
     },
     addCurrent: (img) => {
-        $(".scrollbar").append(`<div onclick="scrollHere(4)" class="block current" id="4"></div>`);
-        $("#4").load(window.location.href + img);
+        $(".scrollbar").append(`<div onclick="scrollHere(4)" class="block current" id="4"><img src="${img}"></div>`);
         $("#4").css("left", `${view.currentPosition}px`);
     },
     addOthers: (dir, i, img) => {
@@ -117,11 +116,9 @@ const view = {
     },
     addIcon: (id, img, dir) => {
         if (dir > 0) {
-            $(".scrollbar").append (`<div onclick="scrollHere(${id})" class="block" id="${id}"></div>`);
-            $(`#${id}`).load(window.location.href + img);
+            $(".scrollbar").append (`<div onclick="scrollHere(${id})" class="block" id="${id}"><img src="${img}"></div>`);
         } else {
             $(".scrollbar").prepend(`<div onclick="scrollHere(${id})" class="block" id="${id}"><img src="${img}"></div>`);
-            $(`#${id}`).load(window.location.href + img);
         }
     },
     setPosition: (id, newPosition) => {

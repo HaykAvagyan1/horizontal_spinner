@@ -165,19 +165,14 @@ body {
     cursor: pointer;
 }
 
-.block:hover svg {
+.block:hover img {
     opacity: 0.6;
 }
 
-.scrollbar div svg {
-    transition: 0.2s;
-    width:  76px !important;
-    height: 76px !important;
-}
-
-.scrollbar div path {
-    transition: 0.4s;
-    fill: #DEDEE6;
+.scrollbar div img {
+    transition: 0.1s;
+    width:  76px;
+    height: 76px;
 }
 
 #buttons {
