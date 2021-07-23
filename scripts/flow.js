@@ -21,7 +21,14 @@ jQuery.event.special.wheel = {
 
 const onPageLoad = async () => {
     data = await parser.dataFetch();
-    data = data.objects;
+
+    if (data != undefined) {
+        data = data.objects;
+    } else {
+        console.log("Uid not available");
+        return;
+    }
+
 
     currentIcon = Math.floor(Math.random() * data.length - 1);
 
