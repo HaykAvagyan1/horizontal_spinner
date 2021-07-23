@@ -21,9 +21,10 @@ jQuery.event.special.wheel = {
 
 const onPageLoad = async () => {
     data = await parser.dataFetch();
+    data = data.data.data;
 
     if (data != undefined) {
-        data = data.objects;
+        data = data.elements;
     } else {
         console.log("Uid not available");
         return;
